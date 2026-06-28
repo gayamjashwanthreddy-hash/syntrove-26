@@ -1309,7 +1309,7 @@
 
             vipSignupModal.classList.add('hidden');
             
-            // Sync new VIP to shared state database
+            // Sync new VIP to shared state database securely
             badgeDatabase[guestEmail] = {
                 name: guestName,
                 affiliation: guestAffiliation,
@@ -1319,19 +1319,26 @@
                 notes: ""
             };
             
-            // Re-render monitors if dashboard is active
+            // Force re-render monitors and tables immediately
             populateStaffTable();
 
+            // Setup Badge Details on Modal
             document.getElementById('modalSquadName').innerText = guestName;
             document.getElementById('modalLeaderName').innerText = guestAffiliation;
 
             generatePassQrCode(guestName, guestAffiliation, guestEmail);
 
+            showSystemToast(`VIP Registered: ${guestEmail}`);
+
+            // Open Pass Gate Modal
             badgeModal.classList.remove('hidden');
             setTimeout(() => {
                 badgeModal.firstElementChild.classList.remove('scale-95');
                 badgeModal.firstElementChild.classList.add('scale-100');
             }, 50);
+
+            // Clean form fields
+            vipDirectForm.reset();
         });
 
         // --- STAFF DESK & CREDENTIAL AUTHORIZATION SYSTEM ---
