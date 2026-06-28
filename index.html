@@ -643,7 +643,7 @@
                         
                         <form id="inviteBypassForm" class="space-y-3">
                             <div class="flex gap-2">
-                                <input type="text" id="partnerCode" required placeholder="Enter Solo Token" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-4 py-2.5 text-xs text-slate-900 font-mono placeholder-slate-400">
+                                <input type="text" id="partnerCode" required placeholder="Enter Solo Token" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-4 py-2.5 text-xs text-slate-900 font-mono">
                                 <button type="submit" class="bg-brand-primary text-white font-bold text-xs px-5 rounded-lg transition hover:bg-sky-600">
                                     Verify
                                 </button>
@@ -662,7 +662,7 @@
                     <form id="badgeLookupForm" class="space-y-3">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5" for="lookupEmail">Developer Email</label>
-                            <input type="email" id="lookupEmail" required placeholder="developer@vanguard.io" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400">
+                            <input type="text" id="lookupEmail" required placeholder="developer@vanguard.io" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-4 py-2.5 text-xs text-slate-900">
                         </div>
                         <button type="submit" class="w-full py-2.5 bg-brand-primary text-white font-bold text-xs rounded-lg transition hover:bg-sky-600 flex items-center justify-center gap-1.5 shadow-sm">
                             <i class="fa-solid fa-id-card"></i> Fetch Gate Boarding Pass
@@ -698,7 +698,7 @@
                 <form id="staffLoginForm" class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Clearance Email</label>
-                        <input type="email" id="staffEmail" required placeholder="organizer@syntrove.org" class="w-full bg-brand-dark border border-brand-border focus:border-brand-secondary focus:outline-none rounded-lg px-3.5 py-2.5 text-xs text-slate-900">
+                        <input type="text" id="staffEmail" required placeholder="staff@syntrove.org" class="w-full bg-brand-dark border border-brand-border focus:border-brand-secondary focus:outline-none rounded-lg px-3.5 py-2.5 text-xs text-slate-900">
                     </div>
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Access PIN / Password</label>
@@ -756,7 +756,7 @@
 
                             <form id="staffSearchForm" class="space-y-3">
                                 <div class="flex gap-2">
-                                    <input type="email" id="staffLookupEmail" required placeholder="Enter developer email..." class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3 py-2.5 text-xs text-slate-900 font-mono">
+                                    <input type="text" id="staffLookupEmail" required placeholder="Enter developer email..." class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3 py-2.5 text-xs text-slate-900 font-mono">
                                     <button type="submit" class="bg-brand-primary text-white font-bold text-xs px-4 rounded-lg transition hover:bg-sky-600 flex items-center gap-1">
                                         <i class="fa-solid fa-magnifying-glass"></i> Find
                                     </button>
@@ -995,7 +995,7 @@
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Your Email Address</label>
-                    <input type="email" id="vipEmail" required placeholder="jane@example.com" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-900">
+                    <input type="text" id="vipEmail" required placeholder="jane@example.com" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-900">
                 </div>
                 <div>
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Company / Affiliation</label>
@@ -1066,7 +1066,125 @@
         </div>
     </footer>
 
-    <script>
+    <!-- Multi-Device State Sync Module Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Pre-populated local fallback registry
+        const defaultDatabase = {
+            "aarav@vanguard.io": { name: "Aarav Sharma", affiliation: "Vanguard Systems", checkedIn: false, problemStatement: "None", rating: null, notes: "" },
+            "priya@trovo.tech": { name: "Priya Reddy", affiliation: "Fintech Nexus", checkedIn: false, problemStatement: "None", rating: null, notes: "" },
+            "dev@studlyf.in": { name: "Kabir Mehra", affiliation: "StudLyf Network", checkedIn: false, problemStatement: "None", rating: null, notes: "" }
+        };
+
+        // Shared live database registry
+        window.badgeDatabase = { ...defaultDatabase };
+
+        let db = null;
+        let auth = null;
+        let appId = 'syntrove-26-platform';
+        let isFirebaseActive = false;
+
+        // Try initializing Firestore environment securely per Rule 1 and Rule 3
+        try {
+            if (typeof __firebase_config !== 'undefined') {
+                const firebaseConfig = JSON.parse(__firebase_config);
+                appId = typeof __app_id !== 'undefined' ? __app_id : 'syntrove-26-platform';
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                isFirebaseActive = true;
+                console.log("Firebase sync state linked successfully.");
+            } else {
+                console.warn("No cloud config detected. Running in single browser localStorage mode.");
+            }
+        } catch (err) {
+            console.error("Cloud initialize failed. Swapping to localized memory state.", err);
+        }
+
+        // Authentication Handshake and Real-Time Pipeline Setup (Rule 3 Guard)
+        async function initSyncEngine() {
+            if (!isFirebaseActive) {
+                // Fallback storage sync
+                const localStore = localStorage.getItem('syntrove_db_v3');
+                if (localStore) {
+                    window.badgeDatabase = JSON.parse(localStore);
+                } else {
+                    localStorage.setItem('syntrove_db_v3', JSON.stringify(defaultDatabase));
+                }
+                populateStaffTable();
+                return;
+            }
+
+            try {
+                // Await auth credentials first per Rule 3
+                let userCredential;
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    userCredential = await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    userCredential = await signInAnonymously(auth);
+                }
+                
+                const user = userCredential.user;
+                if (!user) return;
+
+                console.log("Multi-device authenticated. Active Node Key:", user.uid);
+
+                // Setup public synchronized database stream matching Path Rule 1 & Query Rule 2
+                const syncColPath = collection(db, 'artifacts', appId, 'public', 'data', 'participants');
+                
+                onSnapshot(syncColPath, (snapshot) => {
+                    const loadedData = {};
+                    snapshot.forEach((doc) => {
+                        loadedData[doc.id] = doc.data();
+                    });
+
+                    if (Object.keys(loadedData).length === 0) {
+                        // Seed database on first initiation
+                        Object.keys(defaultDatabase).forEach(async (email) => {
+                            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'participants', email), defaultDatabase[email]);
+                        });
+                        window.badgeDatabase = { ...defaultDatabase };
+                    } else {
+                        window.badgeDatabase = loadedData;
+                    }
+                    populateStaffTable();
+                    
+                    // Refresh search view in staff panel if open
+                    if (currentSearchedDeveloperEmail && window.badgeDatabase[currentSearchedDeveloperEmail]) {
+                        document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
+                    }
+                }, (error) => {
+                    console.error("Snapshot pipeline interrupted: ", error);
+                });
+
+            } catch (err) {
+                console.error("Synchronization auth failed: ", err);
+            }
+        }
+
+        // Push updates to cloud collection per Rule 1 Pathing
+        async function updateParticipantRecord(email, record) {
+            const cleanEmail = email.trim().toLowerCase();
+            if (isFirebaseActive && auth && auth.currentUser) {
+                try {
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'participants', cleanEmail), record);
+                } catch (err) {
+                    console.error("Cloud synchronization write failed: ", err);
+                }
+            } else {
+                window.badgeDatabase[cleanEmail] = record;
+                localStorage.setItem('syntrove_db_v3', JSON.stringify(window.badgeDatabase));
+                populateStaffTable();
+            }
+        }
+        window.updateParticipantRecord = updateParticipantRecord;
+
+        // Initialize state engine on window load
+        window.addEventListener('load', initSyncEngine);
+
         // --- MULTI-VIEW ROUTER SYSTEM ---
         function navigateTo(viewId) {
             document.querySelectorAll('.view-section').forEach(section => {
@@ -1087,9 +1205,14 @@
 
             document.getElementById('mobileMenu').classList.add('hidden');
             document.getElementById('mobileMenuIcon').className = "fa-solid fa-bars text-xl";
-        }
 
-        // --- MOBILE NAVIGATION BAR COLLAPSE ---
+            if (viewId === 'staff' && currentActiveStaffRole) {
+                populateStaffTable();
+            }
+        }
+        window.navigateTo = navigateTo;
+
+        // --- MOBILE MENU COLLAPSIBLE CONTROLLER ---
         const mobileToggle = document.getElementById('mobileMenuToggle');
         const mobileMenu = document.getElementById('mobileMenu');
         const mobileMenuIcon = document.getElementById('mobileMenuIcon');
@@ -1103,7 +1226,7 @@
             }
         });
 
-        // --- COUNTDOWN SYSTEM (TARGET: TOMORROW 09:00 AM IST) ---
+        // --- COUNTDOWN TIMER (TARGET: TOMORROW 09:00 AM IST) ---
         const tomorrowTarget = new Date();
         tomorrowTarget.setDate(tomorrowTarget.getDate() + 1);
         tomorrowTarget.setHours(9, 0, 0, 0); 
@@ -1135,7 +1258,7 @@
         setInterval(updateClockOutputs, 1000);
         updateClockOutputs();
 
-        // Strict Regular Expression for RFC-compliant email verification
+        // RFC validation expression for safe email structures
         function isValidEmail(email) {
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             return emailRegex.test(email);
@@ -1202,6 +1325,7 @@
                 outputBlock.innerText = `HTTP/1.1 ${targetData.status} OK\nContent-Type: application/json\n\n` + JSON.stringify(targetData.payload, null, 2);
             }, 600);
         };
+        window.executeSandboxCall = executeSandboxCall;
 
         const copyConsoleResponse = () => {
             const rawText = document.getElementById('consoleOutput').innerText;
@@ -1211,15 +1335,11 @@
             inputTemp.select();
             document.execCommand('copy');
             document.body.removeChild(inputTemp);
+            showSystemToast("Console output copied!");
         };
+        window.copyConsoleResponse = copyConsoleResponse;
 
-        // --- SYNCHRONIZED DEV & REGISTRY DATABASE ---
-        const badgeDatabase = {
-            "aarav@vanguard.io": { name: "Aarav Sharma", affiliation: "Vanguard Systems", checkedIn: false, problemStatement: "None", rating: null, notes: "" },
-            "priya@trovo.tech": { name: "Priya Reddy", affiliation: "Fintech Nexus", checkedIn: false, problemStatement: "None", rating: null, notes: "" },
-            "dev@studlyf.in": { name: "Kabir Mehra", affiliation: "StudLyf Network", checkedIn: false, problemStatement: "None", rating: null, notes: "" }
-        };
-
+        // --- SYNCHRONIZED PERSISTENT REGISTRY STATE ---
         const badgeLookupForm = document.getElementById('badgeLookupForm');
         const badgeModal = document.getElementById('badgeModal');
         const lookupAlert = document.getElementById('lookupAlert');
@@ -1243,12 +1363,12 @@
             const userEmailInput = document.getElementById('lookupEmail').value.toLowerCase().trim();
             
             if (!isValidEmail(userEmailInput)) {
-                lookupAlert.innerText = "Please enter a valid email address (e.g., name@domain.com).";
+                lookupAlert.innerText = "Please enter a valid email address format.";
                 lookupAlert.classList.remove('hidden');
                 return;
             }
             
-            const matchingRecord = badgeDatabase[userEmailInput];
+            const matchingRecord = window.badgeDatabase[userEmailInput];
 
             if (matchingRecord) {
                 lookupAlert.classList.add('hidden');
@@ -1264,7 +1384,7 @@
                     badgeModal.firstElementChild.classList.add('scale-100');
                 }, 50);
             } else {
-                lookupAlert.innerText = "No record found under that address. Verify your confirmation email or submit a partner bypass code.";
+                lookupAlert.innerText = "No record found under that address. Verify spelling or submit partner token bypass.";
                 lookupAlert.classList.remove('hidden');
             }
         });
@@ -1276,6 +1396,7 @@
                 badgeModal.classList.add('hidden');
             }, 200);
         }
+        window.closeBadgeModal = closeBadgeModal;
 
         // --- WORKING VIP BYPASS GATEWAY CONTROLLER ---
         const activeInviteCodes = ["VIP-SYN-2026", "ZANIKA-CORE", "TROVO-VENTURES", "STUDLYF-VIP"];
@@ -1296,21 +1417,20 @@
             }
         });
 
-        vipDirectForm.addEventListener('submit', (e) => {
+        vipDirectForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const guestName = document.getElementById('vipName').value.trim();
             const guestAffiliation = document.getElementById('vipAffiliation').value.trim();
             const guestEmail = document.getElementById('vipEmail').value.trim().toLowerCase();
 
             if (!isValidEmail(guestEmail)) {
-                showSystemToast("Please enter a valid email address.");
+                showSystemToast("Validation error: Please enter a correct email format.");
                 return;
             }
 
             vipSignupModal.classList.add('hidden');
             
-            // Sync new VIP to shared state database securely
-            badgeDatabase[guestEmail] = {
+            const newVip = {
                 name: guestName,
                 affiliation: guestAffiliation,
                 checkedIn: false,
@@ -1318,16 +1438,16 @@
                 rating: null,
                 notes: ""
             };
-            
-            // Force re-render monitors and tables immediately
-            populateStaffTable();
 
-            // Setup Badge Details on Modal
+            // Write registration immediately across cloud instances
+            window.badgeDatabase[guestEmail] = newVip;
+            await window.updateParticipantRecord(guestEmail, newVip);
+
+            // Setup Pass Badge Details
             document.getElementById('modalSquadName').innerText = guestName;
             document.getElementById('modalLeaderName').innerText = guestAffiliation;
 
             generatePassQrCode(guestName, guestAffiliation, guestEmail);
-
             showSystemToast(`VIP Registered: ${guestEmail}`);
 
             // Open Pass Gate Modal
@@ -1337,11 +1457,10 @@
                 badgeModal.firstElementChild.classList.add('scale-100');
             }, 50);
 
-            // Clean form fields
             vipDirectForm.reset();
         });
 
-        // --- STAFF DESK & CREDENTIAL AUTHORIZATION SYSTEM ---
+        // --- STAFF WORKSPACE CONTROLLER ---
         const staffRolesMap = {
             "organizer@syntrove.org": { role: "Organizer", pass: "org123" },
             "volunteer@syntrove.org": { role: "Volunteer", pass: "vol123" }
@@ -1349,6 +1468,7 @@
 
         let currentActiveStaffRole = null; 
         let currentSearchedDeveloperEmail = null;
+        window.currentSearchedDeveloperEmail = currentSearchedDeveloperEmail;
 
         const staffLoginForm = document.getElementById('staffLoginForm');
         const staffLoginError = document.getElementById('staffLoginError');
@@ -1361,7 +1481,7 @@
             const password = document.getElementById('staffPassword').value.trim();
 
             if (!isValidEmail(email)) {
-                showSystemToast("Please enter a valid email address format.");
+                showSystemToast("Authorization error: Please use a valid staff email format.");
                 return;
             }
 
@@ -1371,7 +1491,6 @@
                 staffLoginError.classList.add('hidden');
                 currentActiveStaffRole = staffInfo.role;
                 
-                // Set Up Panel Session
                 initializeStaffDashboard(email, staffInfo.role);
             } else {
                 staffLoginError.classList.remove('hidden');
@@ -1379,7 +1498,6 @@
         });
 
         function initializeStaffDashboard(email, role) {
-            // Hide Login layout, show panel
             staffLoginContainer.classList.add('hidden');
             staffConsoleContainer.classList.remove('hidden');
 
@@ -1402,13 +1520,13 @@
                 document.getElementById('currentStaffMetaDisplay').innerText = "Station registration and track manager session loaded.";
             }
 
-            // Populate the synchronized state monitoring table
             populateStaffTable();
         }
 
         function logoutStaffPortal() {
             currentActiveStaffRole = null;
             currentSearchedDeveloperEmail = null;
+            window.currentSearchedDeveloperEmail = null;
 
             document.getElementById('staffLoginForm').reset();
             document.getElementById('staffSearchForm').reset();
@@ -1418,16 +1536,18 @@
             staffConsoleContainer.classList.add('hidden');
             staffLoginContainer.classList.remove('hidden');
         }
+        window.logoutStaffPortal = logoutStaffPortal;
 
         // --- REAL-TIME DATA REFRESHERS ---
         function populateStaffTable() {
             const tableBody = document.getElementById('liveStaffTableBody');
-            tableBody.innerHTML = '';
+            if (!tableBody) return;
             
+            tableBody.innerHTML = '';
             let checkedInCount = 0;
 
-            Object.keys(badgeDatabase).forEach(email => {
-                const record = badgeDatabase[email];
+            Object.keys(window.badgeDatabase).forEach(email => {
+                const record = window.badgeDatabase[email];
                 if (record.checkedIn) checkedInCount++;
 
                 const row = document.createElement('tr');
@@ -1455,8 +1575,12 @@
                 tableBody.appendChild(row);
             });
 
-            document.getElementById('checkedInCounterBadge').innerText = `checked in: ${checkedInCount}`;
+            const countBadge = document.getElementById('checkedInCounterBadge');
+            if (countBadge) {
+                countBadge.innerText = `checked in: ${checkedInCount}`;
+            }
         }
+        window.populateStaffTable = populateStaffTable;
 
         // --- SEARCH CANDIDATE FOR WORKSPACE MANAGEMENT ---
         const staffSearchForm = document.getElementById('staffSearchForm');
@@ -1469,23 +1593,22 @@
             const targetEmail = document.getElementById('staffLookupEmail').value.trim().toLowerCase();
             
             if (!isValidEmail(targetEmail)) {
-                showSystemToast("Please enter a valid search email.");
+                showSystemToast("Validation error: Please enter a proper lookup email.");
                 return;
             }
 
-            const record = badgeDatabase[targetEmail];
+            const record = window.badgeDatabase[targetEmail];
 
             if (record) {
                 staffLookupError.classList.add('hidden');
                 currentSearchedDeveloperEmail = targetEmail;
+                window.currentSearchedDeveloperEmail = targetEmail;
 
-                // Bind details onto Operations Card
                 document.getElementById('opDispName').innerText = record.name;
                 document.getElementById('opDispEmail').innerText = targetEmail;
                 document.getElementById('opDispAffiliation').innerText = record.affiliation;
                 document.getElementById('opDispStatement').innerText = record.problemStatement === "None" ? "Not Set" : record.problemStatement;
 
-                // Sync check-in pill color and layout
                 const statusPill = document.getElementById('opDispCheckInBadge');
                 if (record.checkedIn) {
                     statusPill.innerText = "CHECKED-IN";
@@ -1495,7 +1618,6 @@
                     statusPill.className = "px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-mono font-bold bg-red-100 text-red-800";
                 }
 
-                // Adjust Ratings visibility depending on security role
                 const ratingMeta = document.getElementById('opDispRatingMeta');
                 if (currentActiveStaffRole === "Organizer") {
                     ratingMeta.classList.remove('hidden');
@@ -1505,11 +1627,9 @@
                     ratingMeta.classList.add('hidden');
                 }
 
-                // Reveal Action Modules
                 staffActiveParticipantCard.classList.remove('hidden');
                 staffActionFormsContainer.classList.remove('hidden');
 
-                // Toggle Action Form Permissions based on user authorizations
                 configureRoleBasedPanels(record);
 
             } else {
@@ -1517,16 +1637,15 @@
                 staffActiveParticipantCard.classList.add('hidden');
                 staffActionFormsContainer.classList.add('hidden');
                 currentSearchedDeveloperEmail = null;
+                window.currentSearchedDeveloperEmail = null;
             }
         });
 
-        // --- ASSIGN CORE VIEWS PERMISSIONS ---
         function configureRoleBasedPanels(record) {
             const volPanel = document.getElementById('volunteerActionPanel');
             const orgPanel = document.getElementById('organizerActionPanel');
             const chkBtn = document.getElementById('btnCheckInToggle');
 
-            // Sync Check-In Action Button Style
             if (record.checkedIn) {
                 chkBtn.innerText = "MARK ABSENT";
                 chkBtn.className = "px-3 py-1.5 font-mono text-[10px] font-bold tracking-wider text-white uppercase rounded-md bg-red-600 hover:bg-red-700 shadow-sm transition";
@@ -1539,7 +1658,6 @@
                 volPanel.classList.add('hidden');
                 orgPanel.classList.remove('hidden');
 
-                // Load existing scores into forms
                 document.getElementById('evalRange').value = record.rating ? record.rating : 5;
                 updateRangeTextValue(record.rating ? record.rating : 5);
                 document.getElementById('evalNotes').value = record.notes ? record.notes : "";
@@ -1547,58 +1665,59 @@
                 orgPanel.classList.add('hidden');
                 volPanel.classList.remove('hidden');
 
-                // Set dropdown selections
                 document.getElementById('problemStatementDropdown').value = record.problemStatement;
             }
         }
 
-        // --- HANDLERS FOR VERIFICATIONS & RATINGS ---
-        function toggleCandidateCheckIn() {
+        // --- HANDLERS FOR VERIFICATIONS & RATINGS (SYNCED ONLINE) ---
+        async function toggleCandidateCheckIn() {
             if (!currentSearchedDeveloperEmail) return;
-            const record = badgeDatabase[currentSearchedDeveloperEmail];
+            const record = window.badgeDatabase[currentSearchedDeveloperEmail];
             
-            // Toggle State
             record.checkedIn = !record.checkedIn;
+            await window.updateParticipantRecord(currentSearchedDeveloperEmail, record);
 
-            // Re-render Panels
             document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
-            populateStaffTable();
         }
+        window.toggleCandidateCheckIn = toggleCandidateCheckIn;
 
-        // VOLUNTEER SUBMIT: Assign Statement Focus
-        document.getElementById('statementAssignForm').addEventListener('submit', (e) => {
+        document.getElementById('statementAssignForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentSearchedDeveloperEmail) return;
 
             const selectedStatement = document.getElementById('problemStatementDropdown').value;
-            badgeDatabase[currentSearchedDeveloperEmail].problemStatement = selectedStatement;
+            const record = window.badgeDatabase[currentSearchedDeveloperEmail];
+            record.problemStatement = selectedStatement;
 
-            // Update Panel Displays
+            await window.updateParticipantRecord(currentSearchedDeveloperEmail, record);
+
             document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
-            populateStaffTable();
+            showSystemToast("Problem statement updated!");
         });
 
-        // ORGANIZER SUBMIT: Assign Evaluation Grade
-        document.getElementById('projectEvaluationForm').addEventListener('submit', (e) => {
+        document.getElementById('projectEvaluationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentSearchedDeveloperEmail) return;
 
             const score = parseInt(document.getElementById('evalRange').value);
             const notesText = document.getElementById('evalNotes').value.trim();
 
-            badgeDatabase[currentSearchedDeveloperEmail].rating = score;
-            badgeDatabase[currentSearchedDeveloperEmail].notes = notesText;
+            const record = window.badgeDatabase[currentSearchedDeveloperEmail];
+            record.rating = score;
+            record.notes = notesText;
 
-            // Update Panel Displays
+            await window.updateParticipantRecord(currentSearchedDeveloperEmail, record);
+
             document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
-            populateStaffTable();
+            showSystemToast("Project evaluation graded!");
         });
 
         function updateRangeTextValue(val) {
             document.getElementById('rangeScoreValue').innerText = `${val} / 10`;
         }
+        window.updateRangeTextValue = updateRangeTextValue;
 
-        // --- LIVE CAMERA GATE QR SCANNER CORE WITH CASCADING FALLBACKS ---
+        // --- LIVE CAMERA GATE QR SCANNER CORE ---
         let liveQrScannerInstance = null;
 
         function openQrScanner() {
@@ -1609,14 +1728,13 @@
             liveQrScannerInstance = new Html5Qrcode("qrReader");
             const config = { fps: 15, qrbox: { width: 200, height: 200 } };
             
-            // Cascading checks: Try environmental back camera first, fallback to user camera, then switch to file parser
             liveQrScannerInstance.start(
                 { facingMode: "environment" }, 
                 config,
                 onQrScanSuccess,
                 onQrScanFailure
             ).catch(err => {
-                console.warn("Environmental camera unavailable or blocked, trying user/front camera standard...", err);
+                console.warn("Back camera blocked. Defaulting to user camera...", err);
                 return liveQrScannerInstance.start(
                     { facingMode: "user" },
                     config,
@@ -1624,10 +1742,11 @@
                     onQrScanFailure
                 );
             }).catch(err => {
-                console.error("Direct media capture stream blocked entirely. Launching file upload fallback: ", err);
+                console.error("Camera permissions restricted.", err);
                 showQrFallbackInterface();
             });
         }
+        window.openQrScanner = openQrScanner;
 
         function showQrFallbackInterface() {
             document.getElementById('qrReader').classList.add('hidden');
@@ -1638,7 +1757,6 @@
             const file = event.target.files[0];
             if (!file) return;
 
-            // Generate temporary reader instance if stream context was aborted
             const scanner = liveQrScannerInstance || new Html5Qrcode("qrReader");
 
             showSystemToast("Decoding QR photo...");
@@ -1647,12 +1765,13 @@
                     onQrScanSuccess(decodedText);
                 })
                 .catch(err => {
-                    console.error("Static file reading error: ", err);
-                    showSystemToast("Could not find a valid QR Code. Try getting a closer, sharper photo.");
+                    console.error("Scanning file err: ", err);
+                    showSystemToast("Could not find a valid QR Code. Try taking a clearer photo.");
                 });
         }
+        window.handleQrFileSelect = handleQrFileSelect;
 
-        function onQrScanSuccess(decodedText, decodedResult) {
+        function onQrScanSuccess(decodedText) {
             closeQrScanner();
             
             let parsedEmail = decodedText.trim();
@@ -1665,7 +1784,6 @@
                 return;
             }
             
-            // Populate lookups automatically
             const lookupInput = document.getElementById('staffLookupEmail');
             if (lookupInput) {
                 lookupInput.value = parsedEmail;
@@ -1674,8 +1792,8 @@
             }
         }
 
-        function onQrScanFailure(error) {
-            // Keep silent - triggers on every non-match frame
+        function onQrScanFailure() {
+            // Quiet frame handler
         }
 
         function closeQrScanner() {
@@ -1684,13 +1802,14 @@
                 liveQrScannerInstance.stop().then(() => {
                     liveQrScannerInstance = null;
                 }).catch(err => {
-                    console.warn("Stopping live camera warning: ", err);
+                    console.warn("Camera closure release warning: ", err);
                     liveQrScannerInstance = null;
                 });
             }
         }
+        window.closeQrScanner = closeQrScanner;
 
-        // Custom toast indicator
+        // Custom non-blocking visual feedback banner
         function showSystemToast(msg) {
             const toast = document.createElement('div');
             toast.className = "fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-bounce";
@@ -1701,7 +1820,7 @@
             }, 3000);
         }
 
-        // --- DYNAMIC COLLABORATIVE NODES BACKGROUND GRAPH ENGINE ---
+        // --- DYNAMIC GEOMETRIC BACKGROUND GRAPH ENGINE ---
         const particleCanvas = document.getElementById('particleCanvas');
         const canvasCtx = particleCanvas.getContext('2d');
 
@@ -1775,10 +1894,9 @@
             requestAnimationFrame(renderNetworkAnimations);
         };
 
-        window.onload = function () {
-            resizeCanvasDimensions();
-            renderNetworkAnimations();
-        };
+        // Complete Canvas Bindings
+        resizeCanvasDimensions();
+        renderNetworkAnimations();
         window.addEventListener('resize', resizeCanvasDimensions);
 
     </script>
