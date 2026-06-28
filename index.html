@@ -1135,6 +1135,12 @@
         setInterval(updateClockOutputs, 1000);
         updateClockOutputs();
 
+        // Strict Regular Expression for RFC-compliant email verification
+        function isValidEmail(email) {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return emailRegex.test(email);
+        }
+
         // --- INTERACTIVE API SANDBOX CONSOLE PAYLOADS ---
         const responseDataMap = {
             zanika: {
@@ -1235,6 +1241,13 @@
         badgeLookupForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const userEmailInput = document.getElementById('lookupEmail').value.toLowerCase().trim();
+            
+            if (!isValidEmail(userEmailInput)) {
+                lookupAlert.innerText = "Please enter a valid email address (e.g., name@domain.com).";
+                lookupAlert.classList.remove('hidden');
+                return;
+            }
+            
             const matchingRecord = badgeDatabase[userEmailInput];
 
             if (matchingRecord) {
@@ -1251,6 +1264,7 @@
                     badgeModal.firstElementChild.classList.add('scale-100');
                 }, 50);
             } else {
+                lookupAlert.innerText = "No record found under that address. Verify your confirmation email or submit a partner bypass code.";
                 lookupAlert.classList.remove('hidden');
             }
         });
@@ -1287,6 +1301,11 @@
             const guestName = document.getElementById('vipName').value.trim();
             const guestAffiliation = document.getElementById('vipAffiliation').value.trim();
             const guestEmail = document.getElementById('vipEmail').value.trim().toLowerCase();
+
+            if (!isValidEmail(guestEmail)) {
+                showSystemToast("Please enter a valid email address.");
+                return;
+            }
 
             vipSignupModal.classList.add('hidden');
             
@@ -1333,6 +1352,11 @@
             e.preventDefault();
             const email = document.getElementById('staffEmail').value.trim().toLowerCase();
             const password = document.getElementById('staffPassword').value.trim();
+
+            if (!isValidEmail(email)) {
+                showSystemToast("Please enter a valid email address format.");
+                return;
+            }
 
             const staffInfo = staffRolesMap[email];
 
@@ -1436,6 +1460,12 @@
         staffSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const targetEmail = document.getElementById('staffLookupEmail').value.trim().toLowerCase();
+            
+            if (!isValidEmail(targetEmail)) {
+                showSystemToast("Please enter a valid search email.");
+                return;
+            }
+
             const record = badgeDatabase[targetEmail];
 
             if (record) {
@@ -1621,6 +1651,11 @@
             let parsedEmail = decodedText.trim();
             if (parsedEmail.startsWith("SYN2026-EMAIL:")) {
                 parsedEmail = parsedEmail.split("SYN2026-EMAIL:")[1];
+            }
+            
+            if (!isValidEmail(parsedEmail)) {
+                showSystemToast("Error: Decoded QR badge contains an invalid email address.");
+                return;
             }
             
             // Populate lookups automatically
