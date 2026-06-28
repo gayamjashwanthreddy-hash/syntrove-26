@@ -994,6 +994,10 @@
                     <input type="text" id="vipName" required placeholder="Jane Doe" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-900">
                 </div>
                 <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Your Email Address</label>
+                    <input type="email" id="vipEmail" required placeholder="jane@example.com" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-900">
+                </div>
+                <div>
                     <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Company / Affiliation</label>
                     <input type="text" id="vipAffiliation" required placeholder="Tech Ventures" class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3.5 py-2 text-xs text-slate-900">
                 </div>
@@ -1016,12 +1020,26 @@
                 </button>
             </div>
             
-            <div class="bg-slate-50 border border-brand-border rounded-xl overflow-hidden relative">
+            <div class="bg-slate-50 border border-brand-border rounded-xl overflow-hidden relative p-1">
                 <div id="qrReader" class="w-full rounded-lg overflow-hidden" style="min-height: 250px;"></div>
+                
+                <div id="qrFileFallback" class="hidden p-6 text-center space-y-4">
+                    <div class="w-12 h-12 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto text-xl">
+                        <i class="fa-solid fa-camera-slash"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">Webcam Blocked or Device Busy</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Due to context security restrictions in this window, direct camera feeds may be locked. You can snap/upload a quick picture of the badge QR instead.</p>
+                    </div>
+                    <label class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-brand-primary text-white text-xs font-bold rounded-lg cursor-pointer hover:bg-sky-600 transition shadow-sm">
+                        <i class="fa-solid fa-upload"></i> Snap / Upload Photo of QR
+                        <input type="file" id="qrFileInput" accept="image/*" class="hidden" onchange="handleQrFileSelect(event)">
+                    </label>
+                </div>
             </div>
             
             <div class="text-center text-[10px] text-slate-400 font-mono">
-                Ensure proper lighting and center the pass QR code inside the viewfinder window.
+                System verifies security signatures locally on validation.
             </div>
             
             <button onclick="closeQrScanner()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">
@@ -1268,7 +1286,7 @@
             e.preventDefault();
             const guestName = document.getElementById('vipName').value.trim();
             const guestAffiliation = document.getElementById('vipAffiliation').value.trim();
-            const guestEmail = `${guestName.toLowerCase().replace(/\s+/g, '')}@vip.syntrove.com`;
+            const guestEmail = document.getElementById('vipEmail').value.trim().toLowerCase();
 
             vipSignupModal.classList.add('hidden');
             
@@ -1543,31 +1561,58 @@
             document.getElementById('rangeScoreValue').innerText = `${val} / 10`;
         }
 
-        // --- LIVE CAMERA GATE QR SCANNER CORE ---
+        // --- LIVE CAMERA GATE QR SCANNER CORE WITH CASCADING FALLBACKS ---
         let liveQrScannerInstance = null;
 
         function openQrScanner() {
             document.getElementById('qrScannerModal').classList.remove('hidden');
+            document.getElementById('qrReader').classList.remove('hidden');
+            document.getElementById('qrFileFallback').classList.add('hidden');
             
-            // Instantiating scanner
             liveQrScannerInstance = new Html5Qrcode("qrReader");
             const config = { fps: 15, qrbox: { width: 200, height: 200 } };
             
+            // Cascading checks: Try environmental back camera first, fallback to user camera, then switch to file parser
             liveQrScannerInstance.start(
                 { facingMode: "environment" }, 
                 config,
                 onQrScanSuccess,
                 onQrScanFailure
             ).catch(err => {
-                console.error("Camera initialisation failure: ", err);
-                document.getElementById('qrReader').innerHTML = `
-                    <div class="p-6 text-center text-red-600 text-xs font-mono space-y-2">
-                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-                        <p>Camera access denied or device is busy.</p>
-                        <p class="text-[9px] text-slate-400">Please search with developer Email manually or authorize camera rules.</p>
-                    </div>
-                `;
+                console.warn("Environmental camera unavailable or blocked, trying user/front camera standard...", err);
+                return liveQrScannerInstance.start(
+                    { facingMode: "user" },
+                    config,
+                    onQrScanSuccess,
+                    onQrScanFailure
+                );
+            }).catch(err => {
+                console.error("Direct media capture stream blocked entirely. Launching file upload fallback: ", err);
+                showQrFallbackInterface();
             });
+        }
+
+        function showQrFallbackInterface() {
+            document.getElementById('qrReader').classList.add('hidden');
+            document.getElementById('qrFileFallback').classList.remove('hidden');
+        }
+
+        function handleQrFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Generate temporary reader instance if stream context was aborted
+            const scanner = liveQrScannerInstance || new Html5Qrcode("qrReader");
+
+            showSystemToast("Decoding QR photo...");
+            scanner.scanFile(file, true)
+                .then(decodedText => {
+                    onQrScanSuccess(decodedText);
+                })
+                .catch(err => {
+                    console.error("Static file reading error: ", err);
+                    showSystemToast("Could not find a valid QR Code. Try getting a closer, sharper photo.");
+                });
         }
 
         function onQrScanSuccess(decodedText, decodedResult) {
@@ -1597,7 +1642,7 @@
                 liveQrScannerInstance.stop().then(() => {
                     liveQrScannerInstance = null;
                 }).catch(err => {
-                    console.error("Error stopping scanner session: ", err);
+                    console.warn("Stopping live camera warning: ", err);
                     liveQrScannerInstance = null;
                 });
             }
