@@ -40,6 +40,9 @@
     <!-- QR Code Generator Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
 
+    <!-- HTML5 QR Code Scanning Engine -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
     <!-- FontAwesome Vector Library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -63,7 +66,6 @@
             border-color: rgba(109, 40, 217, 0.3);
         }
         
-        /* Custom scrollbar configurations */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -79,7 +81,6 @@
             background: #94A3B8;
         }
 
-        /* Responsive View Display Settings */
         .view-section {
             display: none;
         }
@@ -93,7 +94,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* PRINT CONFIGURATIONS: Ensures high-resolution physical ticket prints perfectly */
         @media print {
             body * {
                 visibility: hidden;
@@ -137,7 +137,6 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
                 
-                <!-- Main Branding block -->
                 <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('lobby')">
                     <div class="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br from-brand-primary via-brand-accent to-brand-secondary p-[1px] shadow-sm">
                         <div class="w-full h-full bg-white rounded-xl flex items-center justify-center">
@@ -164,9 +163,11 @@
                     <button onclick="navigateTo('registration')" id="nav-registration" class="nav-btn px-4 py-2.5 rounded-lg text-slate-500 font-medium hover:text-slate-900 transition flex items-center gap-1.5">
                         Registration <span class="px-1.5 py-0.5 bg-red-100 border border-red-200 text-red-700 rounded text-[9px] font-bold">Closed</span>
                     </button>
+                    <button onclick="navigateTo('staff')" id="nav-staff" class="nav-btn px-4 py-2.5 rounded-lg text-slate-500 font-medium hover:text-slate-900 transition flex items-center gap-1.5 border border-dashed border-slate-300 hover:border-slate-400">
+                        <i class="fa-solid fa-users-cog"></i> Staff Portal
+                    </button>
                 </nav>
 
-                <!-- Action CTA buttons (Mobile-friendly) -->
                 <div class="hidden md:flex items-center gap-3">
                     <button onclick="navigateTo('registration')" class="px-4 py-2.5 border border-brand-border hover:border-brand-primary/40 bg-white rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all flex items-center gap-1.5 shadow-sm">
                         <i class="fa-solid fa-id-badge"></i> Check-In Portal
@@ -194,9 +195,13 @@
                     <span>API Sandbox Explorer</span>
                     <span class="px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary border border-brand-primary/20 text-[9px] rounded font-mono font-bold">Online</span>
                 </button>
-                <button onclick="navigateTo('registration')" class="mobile-nav-btn text-left text-red-600 hover:text-red-800 py-2.5 text-base font-semibold flex items-center justify-between">
+                <button onclick="navigateTo('registration')" class="mobile-nav-btn text-left text-red-600 hover:text-red-800 py-2.5 text-base font-semibold flex items-center justify-between border-b border-brand-border/50">
                     <span>Registration Desk</span>
                     <span class="px-1.5 py-0.5 bg-red-100 border border-red-200 text-red-700 rounded text-[9px] uppercase font-bold tracking-wider">Closed</span>
+                </button>
+                <button onclick="navigateTo('staff')" class="mobile-nav-btn text-left text-slate-700 hover:text-brand-primary py-2.5 text-base font-semibold flex items-center justify-between">
+                    <span>Staff Portal</span>
+                    <span class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 text-slate-700 rounded text-[9px] font-bold">Auth Restricted</span>
                 </button>
             </div>
         </div>
@@ -216,7 +221,6 @@
             
             <div class="max-w-7xl mx-auto w-full grid lg:grid-cols-12 gap-12 items-center">
                 
-                <!-- Hero Content Side -->
                 <div class="lg:col-span-7 space-y-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-50 text-xs text-emerald-800 font-mono font-semibold">
                         <i class="fa-solid fa-stopwatch animate-pulse text-emerald-600"></i> HIGH-OCTANE 8-HOUR SOLO BUILD
@@ -233,7 +237,6 @@
                         Syntrove '26 is an elite, hyper-accelerated physical solo build sprint hosted at WeWork Madhapur. Jointly orchestrated by **Zanika**, **Trovofi**, and **StudLyf**—bringing together engineering power, venture funding channels, and high-performance student hubs. 
                     </p>
 
-                    <!-- Trust Indicators & Setup Parameters -->
                     <div class="grid grid-cols-3 gap-4 py-4 border-t border-b border-brand-border">
                         <div>
                             <div class="text-xl sm:text-2xl font-bold font-display text-slate-900">8 Hours</div>
@@ -249,7 +252,6 @@
                         </div>
                     </div>
 
-                    <!-- Direct Call to Actions -->
                     <div class="flex flex-col sm:flex-row gap-4">
                         <button onclick="navigateTo('agenda')" class="px-8 py-4 bg-brand-primary text-white rounded-xl font-bold shadow-md shadow-brand-primary/10 transition-all text-center flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
                             Review Sprint Agenda <i class="fa-solid fa-arrow-right text-xs"></i>
@@ -260,7 +262,6 @@
                     </div>
                 </div>
 
-                <!-- Hero Clock & Boarding Pass Widget Card -->
                 <div class="lg:col-span-5">
                     <div class="relative bg-brand-card border border-brand-border rounded-2xl overflow-hidden shadow-xl p-6 space-y-6">
                         <div class="absolute inset-0 bg-gradient-to-tr from-brand-primary/5 via-transparent to-brand-secondary/5 pointer-events-none"></div>
@@ -275,7 +276,6 @@
                             </div>
                         </div>
 
-                        <!-- Routing information -->
                         <div class="flex justify-between items-center text-xs">
                             <div>
                                 <span class="text-slate-400 font-mono text-[9px] uppercase font-bold">ORGANIZERS</span>
@@ -314,7 +314,6 @@
                             </div>
                         </div>
 
-                        <!-- Venue Checkpoint segment -->
                         <div class="border-t border-brand-border pt-4 flex items-center justify-between">
                             <div class="space-y-1">
                                 <span class="text-slate-400 block uppercase font-mono text-[9px] font-bold">DEPLOYMENT GROUND</span>
@@ -341,7 +340,6 @@
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Alliance Pillar 1: Zanika -->
                     <div class="bg-brand-card border border-brand-border rounded-xl p-8 hover:border-brand-primary/40 transition duration-300 group shadow-sm hover:shadow-md">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary text-lg transition-transform group-hover:scale-110">
@@ -357,7 +355,6 @@
                         </p>
                     </div>
 
-                    <!-- Alliance Pillar 2: Trovofi -->
                     <div class="bg-brand-card border border-brand-border rounded-xl p-8 hover:border-brand-secondary/40 transition duration-300 group shadow-sm hover:shadow-md">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-10 h-10 rounded-lg bg-brand-secondary/10 flex items-center justify-center text-brand-secondary text-lg transition-transform group-hover:scale-110">
@@ -373,7 +370,6 @@
                         </p>
                     </div>
 
-                    <!-- Alliance Pillar 3: StudLyf -->
                     <div class="bg-brand-card border border-brand-border rounded-xl p-8 hover:border-brand-accent/40 transition duration-300 group shadow-sm hover:shadow-md">
                         <div class="flex items-center gap-3 mb-6">
                             <div class="w-10 h-10 rounded-lg bg-brand-accent/10 flex items-center justify-center text-brand-accent text-lg transition-transform group-hover:scale-110">
@@ -409,7 +405,6 @@
                         </div>
                     </div>
 
-                    <!-- Setup specifications grid -->
                     <div class="w-full lg:w-[420px] bg-white p-6 rounded-xl border border-brand-border space-y-4 shadow-sm">
                         <div class="flex items-center justify-between text-xs border-b border-brand-border pb-2">
                             <span class="text-slate-400 uppercase font-mono font-bold">PHYSICAL SEATING POLICY</span>
@@ -448,7 +443,6 @@
             <!-- Vertical Timeline Tracker -->
             <div class="relative border-l border-brand-border pl-6 sm:pl-8 space-y-12 max-w-3xl mx-auto">
                 
-                <!-- Time Block 1 -->
                 <div class="relative group">
                     <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4.5 h-4.5 rounded-full bg-brand-dark border-2 border-brand-primary flex items-center justify-center transition-all group-hover:scale-125">
                         <div class="w-1.5 h-1.5 bg-brand-primary rounded-full"></div>
@@ -462,7 +456,6 @@
                     </div>
                 </div>
 
-                <!-- Time Block 2 -->
                 <div class="relative group">
                     <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4.5 h-4.5 rounded-full bg-brand-dark border-2 border-brand-accent flex items-center justify-center transition-all group-hover:scale-125">
                         <div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div>
@@ -476,7 +469,6 @@
                     </div>
                 </div>
 
-                <!-- Time Block 3 -->
                 <div class="relative group">
                     <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4.5 h-4.5 rounded-full bg-brand-dark border-2 border-brand-secondary flex items-center justify-center transition-all group-hover:scale-125">
                         <div class="w-1.5 h-1.5 bg-brand-secondary rounded-full"></div>
@@ -490,7 +482,6 @@
                     </div>
                 </div>
 
-                <!-- Time Block 4 -->
                 <div class="relative group">
                     <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4.5 h-4.5 rounded-full bg-brand-dark border-2 border-red-500 flex items-center justify-center transition-all group-hover:scale-125">
                         <div class="w-1.5 h-1.5 bg-red-500 rounded-full"></div>
@@ -504,7 +495,6 @@
                     </div>
                 </div>
 
-                <!-- Time Block 5 -->
                 <div class="relative group">
                     <div class="absolute -left-[31px] sm:-left-[39px] top-1 w-4.5 h-4.5 rounded-full bg-brand-dark border-2 border-slate-900 flex items-center justify-center transition-all group-hover:scale-125">
                         <div class="w-1.5 h-1.5 bg-slate-900 rounded-full"></div>
@@ -534,13 +524,11 @@
             <!-- Side-by-Side Playground Layout -->
             <div class="grid lg:grid-cols-12 gap-8">
                 
-                <!-- Left Side: Endpoint Selectors & Inputs -->
                 <div class="lg:col-span-5 bg-white border border-brand-border rounded-xl p-6 space-y-6 flex flex-col justify-between shadow-sm">
                     <div class="space-y-4">
                         <h3 class="font-bold font-display text-slate-900 text-base">Select Endpoint</h3>
                         
                         <div class="space-y-3">
-                            <!-- Endpoint choice 1 -->
                             <label class="block p-3.5 bg-brand-dark border border-brand-border rounded-xl cursor-pointer hover:border-brand-primary/60 transition relative">
                                 <input type="radio" name="endpointChoice" value="zanika" checked class="absolute right-4 top-4 text-brand-primary focus:ring-brand-primary">
                                 <div class="text-xs font-mono font-bold text-brand-primary mb-1">ZANIKA CLOUD API</div>
@@ -548,7 +536,6 @@
                                 <p class="text-[10px] text-slate-500 mt-1">Check container metrics & active developer micro-instance status.</p>
                             </label>
 
-                            <!-- Endpoint choice 2 -->
                             <label class="block p-3.5 bg-brand-dark border border-brand-border rounded-xl cursor-pointer hover:border-brand-secondary/60 transition relative">
                                 <input type="radio" name="endpointChoice" value="trovofi" class="absolute right-4 top-4 text-brand-secondary focus:ring-brand-secondary">
                                 <div class="text-xs font-mono font-bold text-brand-secondary mb-1">TROVOFI LAYER API</div>
@@ -556,7 +543,6 @@
                                 <p class="text-[10px] text-slate-500 mt-1">Queries mock incubation pool ledger states & grant variables.</p>
                             </label>
 
-                            <!-- Endpoint choice 3 -->
                             <label class="block p-3.5 bg-brand-dark border border-brand-border rounded-xl cursor-pointer hover:border-brand-accent/60 transition relative">
                                 <input type="radio" name="endpointChoice" value="studlyf" class="absolute right-4 top-4 text-brand-accent focus:ring-brand-accent">
                                 <div class="text-xs font-mono font-bold text-brand-accent mb-1">STUDLYF COMMUNITY HUB</div>
@@ -573,10 +559,8 @@
                     </div>
                 </div>
 
-                <!-- Right Side: API Response Viewport -->
                 <div class="lg:col-span-7 flex flex-col">
                     <div class="bg-white border border-brand-border rounded-xl overflow-hidden flex flex-col flex-grow shadow-sm">
-                        <!-- Terminal Header -->
                         <div class="bg-brand-dark px-4 py-3 border-b border-brand-border flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
@@ -589,7 +573,6 @@
                             </button>
                         </div>
 
-                        <!-- Shell Log output area -->
                         <div class="p-5 flex-grow font-mono text-xs text-slate-800 bg-brand-dark overflow-y-auto leading-relaxed max-h-[400px]">
                             <pre id="consoleOutput" class="whitespace-pre-wrap">{
   "status": "idle",
@@ -617,10 +600,8 @@
                 </p>
             </div>
 
-            <!-- Dual Columns: Informational closed block and Live search Desk -->
             <div class="grid md:grid-cols-12 gap-8">
                 
-                <!-- Left panel: Info notice, Solo policy & Bypass Input -->
                 <div class="md:col-span-7 bg-white border border-brand-border rounded-2xl p-6 sm:p-8 space-y-6 shadow-sm">
                     <div class="flex items-center gap-4 text-red-600">
                         <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center text-xl">
@@ -636,7 +617,6 @@
                         To maintain direct engineering mentorship standards and comply with physical safety laws, **we cannot accept walk-ins or manual sign-ups**. 
                     </p>
 
-                    <!-- Solo Builder notice card -->
                     <div class="p-4 bg-amber-50 border border-amber-200 text-amber-900 text-xs rounded-xl flex items-start gap-3">
                         <i class="fa-solid fa-user-shield text-base mt-0.5 text-amber-600"></i>
                         <div>
@@ -645,7 +625,6 @@
                         </div>
                     </div>
 
-                    <!-- Waitlist tracking visualizer -->
                     <div class="p-4 bg-brand-dark rounded-xl border border-brand-border space-y-3">
                         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider font-mono">Current Live Pipeline</h4>
                         <div class="flex justify-between items-center text-xs">
@@ -674,7 +653,6 @@
                     </div>
                 </div>
 
-                <!-- Right panel: Pre-registered User Lookups -->
                 <div class="md:col-span-5 bg-white border border-brand-border rounded-2xl p-6 space-y-4 shadow-sm">
                     <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider font-mono border-b border-brand-border pb-2">Pre-registered Lookup</h3>
                     <p class="text-slate-600 text-xs">
@@ -691,24 +669,234 @@
                         </button>
                     </form>
 
-                    <!-- Alert details warning -->
                     <div id="lookupAlert" class="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg hidden font-mono">
                         No record found under that address. Verify your confirmation email or submit a partner bypass code.
-                    </div>
-
-                    <!-- Fast Testing Hint Card -->
-                    <div class="p-3 bg-brand-dark rounded-lg border border-brand-border text-[10px] space-y-1 text-slate-500 font-mono">
-                        <span class="text-brand-primary block font-bold">Fast Test Solo Entries:</span>
-                        <p class="text-[9px]">Check with these emails:</p>
-                        <ul class="list-disc list-inside space-y-0.5 text-[9px] text-slate-700 font-semibold">
-                            <li>aarav@vanguard.io</li>
-                            <li>priya@trovo.tech</li>
-                            <li>dev@studlyf.in</li>
-                        </ul>
                     </div>
                 </div>
 
             </div>
+        </div>
+    </main>
+
+    <!-- VIEW: STAFF RESTRICTED PORTAL -->
+    <main id="view-staff" class="view-section relative z-10 py-16 flex-grow">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <span class="text-xs font-mono text-brand-secondary uppercase tracking-widest bg-brand-secondary/10 border border-brand-secondary/20 px-3 py-1 rounded-full font-bold">Internal Operations Desk</span>
+                <h2 class="text-3xl sm:text-4xl font-display font-bold mt-4 text-slate-900">Organizer & Volunteer Desk</h2>
+                <p class="text-slate-600 mt-2 text-sm sm:text-base">Secure gateway to verify boarding passes, assign problem statements, and score active developer projects.</p>
+            </div>
+
+            <!-- LOGIN CARD STATE -->
+            <div id="staffLoginContainer" class="max-w-md mx-auto bg-white border border-brand-border rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+                <div class="text-center">
+                    <i class="fa-solid fa-shield-halved text-brand-secondary text-3xl mb-2"></i>
+                    <h3 class="text-lg font-bold text-slate-900">Authorize Staff Credentials</h3>
+                    <p class="text-xs text-slate-500">Provide verified organizer or volunteer clearance email.</p>
+                </div>
+
+                <form id="staffLoginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Clearance Email</label>
+                        <input type="email" id="staffEmail" required placeholder="organizer@syntrove.org" class="w-full bg-brand-dark border border-brand-border focus:border-brand-secondary focus:outline-none rounded-lg px-3.5 py-2.5 text-xs text-slate-900">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Access PIN / Password</label>
+                        <input type="password" id="staffPassword" required placeholder="••••••••" class="w-full bg-brand-dark border border-brand-border focus:border-brand-secondary focus:outline-none rounded-lg px-3.5 py-2.5 text-xs text-slate-900">
+                    </div>
+                    <button type="submit" class="w-full py-2.5 bg-brand-secondary text-white font-bold text-xs rounded-lg transition hover:bg-violet-700 flex items-center justify-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-key"></i> Decrypt Portal
+                    </button>
+                    <p id="staffLoginError" class="text-red-600 text-[10px] font-mono hidden text-center"><i class="fa-solid fa-circle-exclamation mr-1"></i> Unauthorized credentials. Verification check failed.</p>
+                </form>
+            </div>
+
+            <!-- LOGGED-IN CONTROL PANEL DESK -->
+            <div id="staffConsoleContainer" class="hidden space-y-8">
+                <!-- Portal Dashboard Header -->
+                <div class="bg-white border border-brand-border rounded-xl p-6 flex flex-col md:flex-row justify-between items-center gap-4 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div id="roleBadgeContainer" class="w-12 h-12 rounded-xl flex items-center justify-center text-xl">
+                            <i id="roleHeaderIcon" class="fa-solid fa-user-gear"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 id="currentStaffEmailDisplay" class="font-bold text-slate-900 text-sm font-mono">staff@syntrove.org</h3>
+                                <span id="staffRoleBadge" class="px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider font-mono">ROLE</span>
+                            </div>
+                            <p class="text-xs text-slate-500" id="currentStaffMetaDisplay">Active verification workspace at WeWork Madhapur.</p>
+                        </div>
+                    </div>
+                    <button onclick="logoutStaffPortal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-right-from-bracket"></i> Lock Terminal
+                    </button>
+                </div>
+
+                <!-- Live Dynamic Operations Area -->
+                <div class="grid lg:grid-cols-12 gap-8">
+                    
+                    <!-- Left Operation Panel: Search & Control Handlers -->
+                    <div class="lg:col-span-5 bg-white border border-brand-border rounded-xl p-6 space-y-6 shadow-sm flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <div class="border-b border-brand-border pb-3">
+                                <h4 class="font-bold font-display text-slate-900 text-sm uppercase tracking-wider">Candidate Lookup</h4>
+                                <p class="text-[11px] text-slate-500">Query developer credentials across verified, waitlist, and VIP records.</p>
+                            </div>
+
+                            <div class="grid grid-cols-1 gap-3">
+                                <button onclick="openQrScanner()" class="w-full py-3 bg-brand-primary text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm transition hover:bg-sky-600 flex items-center justify-center gap-2">
+                                    <i class="fa-solid fa-camera"></i> Scan Boarding Pass QR
+                                </button>
+                                <div class="relative flex py-1 items-center">
+                                    <div class="flex-grow border-t border-brand-border"></div>
+                                    <span class="flex-shrink mx-3 text-slate-400 text-[10px] uppercase font-mono font-bold tracking-wider">or search manually</span>
+                                    <div class="flex-grow border-t border-brand-border"></div>
+                                </div>
+                            </div>
+
+                            <form id="staffSearchForm" class="space-y-3">
+                                <div class="flex gap-2">
+                                    <input type="email" id="staffLookupEmail" required placeholder="Enter developer email..." class="w-full bg-brand-dark border border-brand-border focus:border-brand-primary focus:outline-none rounded-lg px-3 py-2.5 text-xs text-slate-900 font-mono">
+                                    <button type="submit" class="bg-brand-primary text-white font-bold text-xs px-4 rounded-lg transition hover:bg-sky-600 flex items-center gap-1">
+                                        <i class="fa-solid fa-magnifying-glass"></i> Find
+                                    </button>
+                                </div>
+                                <p id="staffLookupError" class="text-red-600 text-[10px] font-mono hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Email address not found in system state.</p>
+                            </form>
+
+                            <!-- Candidate Details Panel (Shows dynamically after query) -->
+                            <div id="staffActiveParticipantCard" class="hidden p-4 bg-brand-dark border border-brand-border rounded-xl space-y-4">
+                                <div class="flex justify-between items-start border-b border-brand-border/60 pb-3">
+                                    <div>
+                                        <h5 id="opDispName" class="font-bold text-slate-900 text-sm">John Doe</h5>
+                                        <p id="opDispEmail" class="text-[10px] text-slate-500 font-mono">john@domain.com</p>
+                                    </div>
+                                    <span id="opDispCheckInBadge" class="px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-mono font-bold">Status</span>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-4 text-xs">
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 block font-mono font-semibold">AFFILIATION</span>
+                                        <strong id="opDispAffiliation" class="text-slate-800 font-bold block">Developer Corps</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 block font-mono font-semibold">TRACK SELECTION</span>
+                                        <strong id="opDispStatement" class="text-slate-800 font-bold block">Not Set</strong>
+                                    </div>
+                                </div>
+
+                                <div id="opDispRatingMeta" class="grid grid-cols-2 gap-4 text-xs border-t border-brand-border/60 pt-3 hidden">
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 block font-mono font-semibold">PROJECT RATING</span>
+                                        <strong id="opDispRating" class="text-brand-secondary font-bold text-sm block">Unrated</strong>
+                                    </div>
+                                    <div>
+                                        <span class="text-[9px] text-slate-400 block font-mono font-semibold">PANEL COMMENTS</span>
+                                        <p id="opDispNotes" class="text-slate-600 text-[10px] leading-snug">No notes submitted yet.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role-Specific Action Forms -->
+                        <div id="staffActionFormsContainer" class="hidden border-t border-brand-border pt-6 space-y-4">
+                            
+                            <!-- GENERAL CHECK-IN VERIFIER (Shared by Both) -->
+                            <div class="space-y-3 bg-slate-50 p-3.5 rounded-xl border border-brand-border">
+                                <h5 class="text-xs font-bold text-slate-700 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-address-card"></i> 1. Verification Desk
+                                </h5>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-600 font-medium">Flag Physical Gate Entry:</span>
+                                    <button id="btnCheckInToggle" onclick="toggleCandidateCheckIn()" class="px-3 py-1.5 font-mono text-[10px] font-bold tracking-wider text-white uppercase rounded-md transition duration-150 shadow-sm">
+                                        TOGGLE CHECK-IN
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- VOLUNTEER STATEMENT ASSIGNER PANEL -->
+                            <div id="volunteerActionPanel" class="hidden space-y-3 bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100">
+                                <h5 class="text-xs font-bold text-emerald-800 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-diagram-project"></i> 2. Map Problem Statement
+                                </h5>
+                                <p class="text-[10px] text-emerald-700 leading-snug">Lock in the candidate's chosen individual sprint focus track.</p>
+                                
+                                <form id="statementAssignForm" class="space-y-2">
+                                    <select id="problemStatementDropdown" class="w-full bg-white border border-brand-border focus:border-brand-accent focus:outline-none rounded-lg px-2 py-2 text-xs text-slate-900 font-medium">
+                                        <option value="None">-- Select Sprint Track --</option>
+                                        <option value="Zanika Micro-SaaS Endpoint">Zanika Micro-SaaS Endpoint</option>
+                                        <option value="Trovofi Ledger Settlement Ledger">Trovofi Settlement Ledger</option>
+                                        <option value="StudLyf Community Perks Hub">StudLyf Community Perks Hub</option>
+                                        <option value="High-Load Fast API Bridge">High-Load Fast API Bridge</option>
+                                    </select>
+                                    <button type="submit" class="w-full py-2 bg-brand-accent text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm transition hover:bg-emerald-700">
+                                        Assign Statement
+                                    </button>
+                                </form>
+                            </div>
+
+                            <!-- ORGANIZER GRADER PANEL -->
+                            <div id="organizerActionPanel" class="hidden space-y-3 bg-violet-50/50 p-3.5 rounded-xl border border-violet-100">
+                                <h5 class="text-xs font-bold text-violet-800 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                                    <i class="fa-solid fa-star"></i> 2. Organizer Evaluation
+                                </h5>
+                                <p class="text-[10px] text-violet-700 leading-snug">Rate structural elegance, compliance, and core platform execution.</p>
+                                
+                                <form id="projectEvaluationForm" class="space-y-3">
+                                    <div>
+                                        <div class="flex justify-between items-center mb-1">
+                                            <label class="block text-[10px] font-bold text-violet-800 uppercase tracking-wider">Evaluation Score (1 - 10)</label>
+                                            <span id="rangeScoreValue" class="text-xs font-bold text-brand-secondary font-mono">5 / 10</span>
+                                        </div>
+                                        <input type="range" id="evalRange" min="1" max="10" value="5" oninput="updateRangeTextValue(this.value)" class="w-full accent-brand-secondary cursor-pointer">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-violet-800 uppercase tracking-wider mb-1">Evaluation Comments</label>
+                                        <textarea id="evalNotes" rows="2" placeholder="Describe prototype build performance..." class="w-full bg-white border border-brand-border focus:border-brand-secondary focus:outline-none rounded-lg px-2.5 py-1.5 text-xs text-slate-900"></textarea>
+                                    </div>
+                                    <button type="submit" class="w-full py-2 bg-brand-secondary text-white font-bold text-xs uppercase tracking-wider rounded-lg shadow-sm transition hover:bg-violet-700">
+                                        Submit Rating Score
+                                    </button>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Right Operation Panel: State Grid (Active Boarding Tracker) -->
+                    <div class="lg:col-span-7 bg-white border border-brand-border rounded-xl p-6 shadow-sm flex flex-col space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-brand-border pb-3">
+                            <div>
+                                <h4 class="font-bold font-display text-slate-900 text-sm uppercase tracking-wider">Live Sprint Registry Monitor</h4>
+                                <p class="text-[11px] text-slate-500">Live, dynamically synchronized client registration table states.</p>
+                            </div>
+                            <span id="checkedInCounterBadge" class="bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[10px] font-mono font-bold px-2.5 py-1 rounded-full">
+                                checked in: 0
+                            </span>
+                        </div>
+
+                        <!-- Interactive Table Container -->
+                        <div class="overflow-x-auto w-full max-h-[460px]">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-brand-border bg-brand-dark/60 text-[9px] font-mono text-slate-500 uppercase tracking-wider">
+                                        <th class="py-2.5 px-3">Developer</th>
+                                        <th class="py-2.5 px-3">Affiliation</th>
+                                        <th class="py-2.5 px-3">Gate Check</th>
+                                        <th class="py-2.5 px-3">Problem Statement</th>
+                                        <th class="py-2.5 px-3">Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="liveStaffTableBody">
+                                    <!-- Dynamic Rows Injected via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -816,6 +1004,32 @@
         </div>
     </div>
 
+    <!-- CAMERA QR SCANNER VIEWPORT MODAL -->
+    <div id="qrScannerModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md hidden">
+        <div class="bg-white border border-brand-border max-w-md w-full rounded-2xl p-6 shadow-2xl relative space-y-4">
+            <div class="flex justify-between items-center border-b border-brand-border pb-3">
+                <h3 class="text-sm font-bold font-display text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-qrcode text-brand-primary animate-pulse"></i> Gate Boarding Pass Scanner
+                </h3>
+                <button onclick="closeQrScanner()" class="text-slate-400 hover:text-slate-600 text-lg transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="bg-slate-50 border border-brand-border rounded-xl overflow-hidden relative">
+                <div id="qrReader" class="w-full rounded-lg overflow-hidden" style="min-height: 250px;"></div>
+            </div>
+            
+            <div class="text-center text-[10px] text-slate-400 font-mono">
+                Ensure proper lighting and center the pass QR code inside the viewfinder window.
+            </div>
+            
+            <button onclick="closeQrScanner()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">
+                Cancel Scan
+            </button>
+        </div>
+    </div>
+
     <!-- Main footer element -->
     <footer class="bg-white border-t border-brand-border py-12 relative z-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -837,17 +1051,14 @@
     <script>
         // --- MULTI-VIEW ROUTER SYSTEM ---
         function navigateTo(viewId) {
-            // Deactivate and hide all section elements
             document.querySelectorAll('.view-section').forEach(section => {
                 section.classList.remove('active');
             });
-            // Show selected target
             const activeView = document.getElementById(`view-${viewId}`);
             if (activeView) {
                 activeView.classList.add('active');
             }
 
-            // Sync menu button highlighting active state
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.className = "nav-btn px-4 py-2.5 rounded-lg text-slate-500 font-medium hover:text-slate-900 transition";
             });
@@ -856,7 +1067,6 @@
                 activeBtn.className = "nav-btn px-4 py-2.5 rounded-lg text-slate-900 font-medium bg-brand-border/40 transition";
             }
 
-            // Close collapsible mobile navigation overlay
             document.getElementById('mobileMenu').classList.add('hidden');
             document.getElementById('mobileMenuIcon').className = "fa-solid fa-bars text-xl";
         }
@@ -876,10 +1086,9 @@
         });
 
         // --- COUNTDOWN SYSTEM (TARGET: TOMORROW 09:00 AM IST) ---
-        // Dynamically calculates time gap relative to tomorrow morning at exactly 09:00 AM IST
         const tomorrowTarget = new Date();
         tomorrowTarget.setDate(tomorrowTarget.getDate() + 1);
-        tomorrowTarget.setHours(9, 0, 0, 0); // Sets clock to 09:00:00 AM
+        tomorrowTarget.setHours(9, 0, 0, 0); 
         const countdownFinishTime = tomorrowTarget.getTime();
 
         const updateClockOutputs = () => {
@@ -980,23 +1189,23 @@
             document.body.removeChild(inputTemp);
         };
 
-        // --- PRE-REGISTERED DEVELOPER BADGE DATABASE ---
+        // --- SYNCHRONIZED DEV & REGISTRY DATABASE ---
         const badgeDatabase = {
-            "aarav@vanguard.io": { name: "Aarav Sharma", affiliation: "Vanguard Systems" },
-            "priya@trovo.tech": { name: "Priya Reddy", affiliation: "Fintech Nexus" },
-            "dev@studlyf.in": { name: "Kabir Mehra", affiliation: "StudLyf Network" }
+            "aarav@vanguard.io": { name: "Aarav Sharma", affiliation: "Vanguard Systems", checkedIn: false, problemStatement: "None", rating: null, notes: "" },
+            "priya@trovo.tech": { name: "Priya Reddy", affiliation: "Fintech Nexus", checkedIn: false, problemStatement: "None", rating: null, notes: "" },
+            "dev@studlyf.in": { name: "Kabir Mehra", affiliation: "StudLyf Network", checkedIn: false, problemStatement: "None", rating: null, notes: "" }
         };
 
         const badgeLookupForm = document.getElementById('badgeLookupForm');
         const badgeModal = document.getElementById('badgeModal');
         const lookupAlert = document.getElementById('lookupAlert');
 
-        function generatePassQrCode(name, affiliation) {
+        function generatePassQrCode(name, affiliation, email) {
             const qrCanvas = document.getElementById('ticketQrCode');
             if (qrCanvas) {
                 new QRious({
                     element: qrCanvas,
-                    value: `SYN-2026 | SOLOIST: ${name} | ORG: ${affiliation} | DURATION: 8H | STATUS: ACTIVE`,
+                    value: `SYN2026-EMAIL:${email}`,
                     size: 160,
                     background: '#FFFFFF',
                     foreground: '#000000',
@@ -1013,12 +1222,10 @@
             if (matchingRecord) {
                 lookupAlert.classList.add('hidden');
                 
-                // Map matched profiles to printable ticket components
                 document.getElementById('modalSquadName').innerText = matchingRecord.name;
                 document.getElementById('modalLeaderName').innerText = matchingRecord.affiliation;
 
-                // Render dynamic QR code
-                generatePassQrCode(matchingRecord.name, matchingRecord.affiliation);
+                generatePassQrCode(matchingRecord.name, matchingRecord.affiliation, userEmailInput);
 
                 badgeModal.classList.remove('hidden');
                 setTimeout(() => {
@@ -1057,20 +1264,31 @@
             }
         });
 
-        // Handle instant creation of custom passes for VIP invitees
         vipDirectForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const guestName = document.getElementById('vipName').value.trim();
             const guestAffiliation = document.getElementById('vipAffiliation').value.trim();
+            const guestEmail = `${guestName.toLowerCase().replace(/\s+/g, '')}@vip.syntrove.com`;
 
-            // Hide registration overlays and launch custom badge print preview
             vipSignupModal.classList.add('hidden');
             
+            // Sync new VIP to shared state database
+            badgeDatabase[guestEmail] = {
+                name: guestName,
+                affiliation: guestAffiliation,
+                checkedIn: false,
+                problemStatement: "None",
+                rating: null,
+                notes: ""
+            };
+            
+            // Re-render monitors if dashboard is active
+            populateStaffTable();
+
             document.getElementById('modalSquadName').innerText = guestName;
             document.getElementById('modalLeaderName').innerText = guestAffiliation;
 
-            // Render dynamic QR code for VIP guests
-            generatePassQrCode(guestName, guestAffiliation);
+            generatePassQrCode(guestName, guestAffiliation, guestEmail);
 
             badgeModal.classList.remove('hidden');
             setTimeout(() => {
@@ -1078,6 +1296,323 @@
                 badgeModal.firstElementChild.classList.add('scale-100');
             }, 50);
         });
+
+        // --- STAFF DESK & CREDENTIAL AUTHORIZATION SYSTEM ---
+        const staffRolesMap = {
+            "organizer@syntrove.org": { role: "Organizer", pass: "org123" },
+            "volunteer@syntrove.org": { role: "Volunteer", pass: "vol123" }
+        };
+
+        let currentActiveStaffRole = null; 
+        let currentSearchedDeveloperEmail = null;
+
+        const staffLoginForm = document.getElementById('staffLoginForm');
+        const staffLoginError = document.getElementById('staffLoginError');
+        const staffLoginContainer = document.getElementById('staffLoginContainer');
+        const staffConsoleContainer = document.getElementById('staffConsoleContainer');
+
+        staffLoginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const password = document.getElementById('staffPassword').value.trim();
+
+            const staffInfo = staffRolesMap[email];
+
+            if (staffInfo && staffInfo.pass === password) {
+                staffLoginError.classList.add('hidden');
+                currentActiveStaffRole = staffInfo.role;
+                
+                // Set Up Panel Session
+                initializeStaffDashboard(email, staffInfo.role);
+            } else {
+                staffLoginError.classList.remove('hidden');
+            }
+        });
+
+        function initializeStaffDashboard(email, role) {
+            // Hide Login layout, show panel
+            staffLoginContainer.classList.add('hidden');
+            staffConsoleContainer.classList.remove('hidden');
+
+            document.getElementById('currentStaffEmailDisplay').innerText = email;
+            const badge = document.getElementById('staffRoleBadge');
+            badge.innerText = role;
+
+            const icon = document.getElementById('roleHeaderIcon');
+            const iconContainer = document.getElementById('roleBadgeContainer');
+
+            if (role === "Organizer") {
+                badge.className = "px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider font-mono bg-violet-100 border border-violet-300 text-violet-700";
+                icon.className = "fa-solid fa-crown text-violet-700";
+                iconContainer.className = "w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-violet-100";
+                document.getElementById('currentStaffMetaDisplay').innerText = "Incubation pool manager session loaded.";
+            } else {
+                badge.className = "px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider font-mono bg-emerald-100 border border-emerald-300 text-emerald-700";
+                icon.className = "fa-solid fa-clipboard-check text-emerald-700";
+                iconContainer.className = "w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-emerald-100";
+                document.getElementById('currentStaffMetaDisplay').innerText = "Station registration and track manager session loaded.";
+            }
+
+            // Populate the synchronized state monitoring table
+            populateStaffTable();
+        }
+
+        function logoutStaffPortal() {
+            currentActiveStaffRole = null;
+            currentSearchedDeveloperEmail = null;
+
+            document.getElementById('staffLoginForm').reset();
+            document.getElementById('staffSearchForm').reset();
+            document.getElementById('staffActiveParticipantCard').classList.add('hidden');
+            document.getElementById('staffActionFormsContainer').classList.add('hidden');
+
+            staffConsoleContainer.classList.add('hidden');
+            staffLoginContainer.classList.remove('hidden');
+        }
+
+        // --- REAL-TIME DATA REFRESHERS ---
+        function populateStaffTable() {
+            const tableBody = document.getElementById('liveStaffTableBody');
+            tableBody.innerHTML = '';
+            
+            let checkedInCount = 0;
+
+            Object.keys(badgeDatabase).forEach(email => {
+                const record = badgeDatabase[email];
+                if (record.checkedIn) checkedInCount++;
+
+                const row = document.createElement('tr');
+                row.className = "border-b border-brand-border/60 hover:bg-slate-50 transition duration-150";
+
+                row.innerHTML = `
+                    <td class="py-2.5 px-3">
+                        <div class="font-bold text-slate-800 text-[11px]">${record.name}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">${email}</div>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-600 font-semibold">${record.affiliation}</td>
+                    <td class="py-2.5 px-3">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono ${record.checkedIn ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                            ${record.checkedIn ? 'CHECKED-IN' : 'ABSENT'}
+                        </span>
+                    </td>
+                    <td class="py-2.5 px-3 text-slate-600 font-mono text-[10px]">${record.problemStatement === 'None' ? '<span class="text-slate-400">Not Assigned</span>' : record.problemStatement}</td>
+                    <td class="py-2.5 px-3">
+                        <span class="font-bold text-xs ${record.rating ? 'text-brand-secondary' : 'text-slate-400'}">
+                            ${record.rating ? record.rating + ' / 10' : '--'}
+                        </span>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+
+            document.getElementById('checkedInCounterBadge').innerText = `checked in: ${checkedInCount}`;
+        }
+
+        // --- SEARCH CANDIDATE FOR WORKSPACE MANAGEMENT ---
+        const staffSearchForm = document.getElementById('staffSearchForm');
+        const staffLookupError = document.getElementById('staffLookupError');
+        const staffActiveParticipantCard = document.getElementById('staffActiveParticipantCard');
+        const staffActionFormsContainer = document.getElementById('staffActionFormsContainer');
+
+        staffSearchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const targetEmail = document.getElementById('staffLookupEmail').value.trim().toLowerCase();
+            const record = badgeDatabase[targetEmail];
+
+            if (record) {
+                staffLookupError.classList.add('hidden');
+                currentSearchedDeveloperEmail = targetEmail;
+
+                // Bind details onto Operations Card
+                document.getElementById('opDispName').innerText = record.name;
+                document.getElementById('opDispEmail').innerText = targetEmail;
+                document.getElementById('opDispAffiliation').innerText = record.affiliation;
+                document.getElementById('opDispStatement').innerText = record.problemStatement === "None" ? "Not Set" : record.problemStatement;
+
+                // Sync check-in pill color and layout
+                const statusPill = document.getElementById('opDispCheckInBadge');
+                if (record.checkedIn) {
+                    statusPill.innerText = "CHECKED-IN";
+                    statusPill.className = "px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-mono font-bold bg-emerald-100 text-emerald-800";
+                } else {
+                    statusPill.innerText = "ABSENT";
+                    statusPill.className = "px-2 py-0.5 rounded text-[8px] uppercase tracking-widest font-mono font-bold bg-red-100 text-red-800";
+                }
+
+                // Adjust Ratings visibility depending on security role
+                const ratingMeta = document.getElementById('opDispRatingMeta');
+                if (currentActiveStaffRole === "Organizer") {
+                    ratingMeta.classList.remove('hidden');
+                    document.getElementById('opDispRating').innerText = record.rating ? `${record.rating} / 10` : "Unrated";
+                    document.getElementById('opDispNotes').innerText = record.notes ? record.notes : "No notes submitted yet.";
+                } else {
+                    ratingMeta.classList.add('hidden');
+                }
+
+                // Reveal Action Modules
+                staffActiveParticipantCard.classList.remove('hidden');
+                staffActionFormsContainer.classList.remove('hidden');
+
+                // Toggle Action Form Permissions based on user authorizations
+                configureRoleBasedPanels(record);
+
+            } else {
+                staffLookupError.classList.remove('hidden');
+                staffActiveParticipantCard.classList.add('hidden');
+                staffActionFormsContainer.classList.add('hidden');
+                currentSearchedDeveloperEmail = null;
+            }
+        });
+
+        // --- ASSIGN CORE VIEWS PERMISSIONS ---
+        function configureRoleBasedPanels(record) {
+            const volPanel = document.getElementById('volunteerActionPanel');
+            const orgPanel = document.getElementById('organizerActionPanel');
+            const chkBtn = document.getElementById('btnCheckInToggle');
+
+            // Sync Check-In Action Button Style
+            if (record.checkedIn) {
+                chkBtn.innerText = "MARK ABSENT";
+                chkBtn.className = "px-3 py-1.5 font-mono text-[10px] font-bold tracking-wider text-white uppercase rounded-md bg-red-600 hover:bg-red-700 shadow-sm transition";
+            } else {
+                chkBtn.innerText = "VERIFY PASS";
+                chkBtn.className = "px-3 py-1.5 font-mono text-[10px] font-bold tracking-wider text-white uppercase rounded-md bg-emerald-600 hover:bg-emerald-700 shadow-sm transition";
+            }
+
+            if (currentActiveStaffRole === "Organizer") {
+                volPanel.classList.add('hidden');
+                orgPanel.classList.remove('hidden');
+
+                // Load existing scores into forms
+                document.getElementById('evalRange').value = record.rating ? record.rating : 5;
+                updateRangeTextValue(record.rating ? record.rating : 5);
+                document.getElementById('evalNotes').value = record.notes ? record.notes : "";
+            } else if (currentActiveStaffRole === "Volunteer") {
+                orgPanel.classList.add('hidden');
+                volPanel.classList.remove('hidden');
+
+                // Set dropdown selections
+                document.getElementById('problemStatementDropdown').value = record.problemStatement;
+            }
+        }
+
+        // --- HANDLERS FOR VERIFICATIONS & RATINGS ---
+        function toggleCandidateCheckIn() {
+            if (!currentSearchedDeveloperEmail) return;
+            const record = badgeDatabase[currentSearchedDeveloperEmail];
+            
+            // Toggle State
+            record.checkedIn = !record.checkedIn;
+
+            // Re-render Panels
+            document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
+            populateStaffTable();
+        }
+
+        // VOLUNTEER SUBMIT: Assign Statement Focus
+        document.getElementById('statementAssignForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!currentSearchedDeveloperEmail) return;
+
+            const selectedStatement = document.getElementById('problemStatementDropdown').value;
+            badgeDatabase[currentSearchedDeveloperEmail].problemStatement = selectedStatement;
+
+            // Update Panel Displays
+            document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
+            populateStaffTable();
+        });
+
+        // ORGANIZER SUBMIT: Assign Evaluation Grade
+        document.getElementById('projectEvaluationForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!currentSearchedDeveloperEmail) return;
+
+            const score = parseInt(document.getElementById('evalRange').value);
+            const notesText = document.getElementById('evalNotes').value.trim();
+
+            badgeDatabase[currentSearchedDeveloperEmail].rating = score;
+            badgeDatabase[currentSearchedDeveloperEmail].notes = notesText;
+
+            // Update Panel Displays
+            document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
+            populateStaffTable();
+        });
+
+        function updateRangeTextValue(val) {
+            document.getElementById('rangeScoreValue').innerText = `${val} / 10`;
+        }
+
+        // --- LIVE CAMERA GATE QR SCANNER CORE ---
+        let liveQrScannerInstance = null;
+
+        function openQrScanner() {
+            document.getElementById('qrScannerModal').classList.remove('hidden');
+            
+            // Instantiating scanner
+            liveQrScannerInstance = new Html5Qrcode("qrReader");
+            const config = { fps: 15, qrbox: { width: 200, height: 200 } };
+            
+            liveQrScannerInstance.start(
+                { facingMode: "environment" }, 
+                config,
+                onQrScanSuccess,
+                onQrScanFailure
+            ).catch(err => {
+                console.error("Camera initialisation failure: ", err);
+                document.getElementById('qrReader').innerHTML = `
+                    <div class="p-6 text-center text-red-600 text-xs font-mono space-y-2">
+                        <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+                        <p>Camera access denied or device is busy.</p>
+                        <p class="text-[9px] text-slate-400">Please search with developer Email manually or authorize camera rules.</p>
+                    </div>
+                `;
+            });
+        }
+
+        function onQrScanSuccess(decodedText, decodedResult) {
+            closeQrScanner();
+            
+            let parsedEmail = decodedText.trim();
+            if (parsedEmail.startsWith("SYN2026-EMAIL:")) {
+                parsedEmail = parsedEmail.split("SYN2026-EMAIL:")[1];
+            }
+            
+            // Populate lookups automatically
+            const lookupInput = document.getElementById('staffLookupEmail');
+            if (lookupInput) {
+                lookupInput.value = parsedEmail;
+                document.getElementById('staffSearchForm').dispatchEvent(new Event('submit'));
+                showSystemToast(`Loaded Member: ${parsedEmail}`);
+            }
+        }
+
+        function onQrScanFailure(error) {
+            // Keep silent - triggers on every non-match frame
+        }
+
+        function closeQrScanner() {
+            document.getElementById('qrScannerModal').classList.add('hidden');
+            if (liveQrScannerInstance) {
+                liveQrScannerInstance.stop().then(() => {
+                    liveQrScannerInstance = null;
+                }).catch(err => {
+                    console.error("Error stopping scanner session: ", err);
+                    liveQrScannerInstance = null;
+                });
+            }
+        }
+
+        // Custom toast indicator
+        function showSystemToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = "fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-bounce";
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>${msg}</span>`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
 
         // --- DYNAMIC COLLABORATIVE NODES BACKGROUND GRAPH ENGINE ---
         const particleCanvas = document.getElementById('particleCanvas');
@@ -1113,7 +1648,6 @@
                 this.x += this.vx;
                 this.y += this.vy;
 
-                // Bounce variables against margins
                 if (this.x < 0 || this.x > particleCanvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > particleCanvas.height) this.vy *= -1;
             }
@@ -1134,7 +1668,6 @@
                 p.draw();
             });
 
-            // Connect nearest node partners with thin glow lines
             for (let i = 0; i < particlesList.length; i++) {
                 for (let j = i + 1; j < particlesList.length; j++) {
                     const dx = particlesList[i].x - particlesList[j].x;
@@ -1155,7 +1688,6 @@
             requestAnimationFrame(renderNetworkAnimations);
         };
 
-        // Initialize animation triggers on page load
         window.onload = function () {
             resizeCanvasDimensions();
             renderNetworkAnimations();
